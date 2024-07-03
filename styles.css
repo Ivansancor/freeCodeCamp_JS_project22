@@ -39,7 +39,6 @@ button {
     padding: 0.5rem 1rem;
     font-size: 2rem;
     cursor: pointer;
-    margin-bottom: none;
 }
 
 button:hover {
@@ -47,8 +46,11 @@ button:hover {
     background-color: black;
 }
 
-button:focus {
-    border: 0.2rem solid black;
+#cash-received-p {
+    display: none;
+    margin-top: 2rem;
+    font-weight: bold;
+    font-size: 2rem;
 }
 
 
@@ -83,11 +85,11 @@ button:focus {
 }
 
 #change-due {
+    display: none;
     position: absolute;
-    right: 2rem;
-    top: 2rem;
-    height: 20rem;
-    width: 15rem;
+    right: 3rem;
+    bottom: 6rem;
+    width: 25rem;
     padding: 2rem;
     border: 0.5rem double darkgreen;
     color: darkgreen;

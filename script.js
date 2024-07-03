@@ -1,7 +1,11 @@
 const cashInput = document.getElementById("cash");
 const purchaseBtn = document.getElementById("purchase-btn");
 const changeDue = document.getElementById("change-due");
+const cashReceivedP = document.getElementById("cash-received-p")
+const cashReceivedSpan = document.getElementById("cash-received-span")
 
+
+const priceToPay = 3.26;
 
 
 const calculateChange = () => {
@@ -9,18 +13,33 @@ const calculateChange = () => {
         alert("Please enter an amount");
         return;
     }
-    // const regex = /[e-+]/gi;
-    const cashReceived = cashInput.value;
-    // .replace(regex, "");
-    let status = "All good";
-    changeDue.innerHTML = `
-    <span>Status: ${status}</span>
-    <p>${cashReceived}</p>
-    `;
+    else {
+        const regex = /e|\+|-/gi;
+        const cashReceived = Number(cashInput.value.replace(regex, ""));
+        cashInput.value = "";
+
+        if (cashReceived < priceToPay) {
+            alert("Customer does not have enough money to purchase the item");
+            return;
+        } else if (cashReceived === priceToPay) {
+            changeDue.textContent = "No change due - customer paid with exact cash";
+            changeDue.style.display = "block";
+            cashReceivedSpan.innerHTML= `${cashReceived} &#8680;`;
+            cashReceivedP.style.display = "block"
+        } else {
+        }
+        
+        // const status = cashReceived === priceToPay ? "CLOSED" : cashReceived > priceToPay ? "OPEN" : "INSUFFICIENT_FUNDS";
+        // changeDue.innerHTML = `
+        // <span>Status: ${status}</span>
+        // <p></p>
+        // `;
+        // changeDue.style.display = "block";
+
+    }
 }
 
 
-// const priceToPay = 3.26;
 // const change = [
 //     {name: pennies,
 //         quantity: 101
@@ -54,7 +73,7 @@ const calculateChange = () => {
 cashInput.addEventListener("keyup", e => {
  if (e.key === "Enter") {
     calculateChange();
- }
+}
 });
 
 purchaseBtn.addEventListener("click", calculateChange);
