@@ -10,6 +10,8 @@ const changeDueP = document.getElementById("change-due-p")
 const changeDueSpan = document.getElementById("change-due-span")
 
 
+
+
 const priceToPay = 3.26;
 
 const change = [
@@ -55,6 +57,13 @@ const calculateBoxTotalValue = () => {
     return (change.reduce((acc, item) => acc + item.quantity * item.value, 0));
 }
 
+let totalChangeInBox = calculateBoxTotalValue();
+
+
+
+
+
+
 const displayPricetoPay = () => {
     priceOfPurchase.textContent = `Price to pay: $${priceToPay.toFixed(2)}`;
 }
@@ -65,25 +74,39 @@ const displayBoxContents = () => {
         htmlInjection += `<li>${item.name}: $${(item.value*item.quantity).toFixed(2)}<li>`;
     }
     registerBoxDrawerList.innerHTML = htmlInjection;
-    registerBoxScreenTotal.textContent = `Total change available: $${calculateBoxTotalValue().toFixed(2)}`
+    registerBoxScreenTotal.textContent = `Total change available: $${totalChangeInBox.toFixed(2)}`
 }
 
 window.onload = () => {
     displayPricetoPay();
     displayBoxContents();
 }
-// const calculateChange = cashToEval => {
-//     const totalValueInBox = Number(calculateBoxTotalValue(change));
-//     const statusTxt = (cashToEval - priceToPay) > totalValueInBox ? "INSUFFICIENT_FUNDS" : (cashToEval - priceToPay) === totalValueInBox ? "CLOSED" : "OPEN";
 
-//     changeDue.innerHTML = `
-//         <span>Status: ${statusTxt}</span>
-//         <p></p>
-//         `;
-//         changeDue.style.display = "block";
+//WORKING ON THIS ONE CURRENTLY!!!
+const calculateChange = dueToGive => {
+    const statusTxt = dueToGive.toFixed(2) === totalChangeInBox.toFixed(2) ? "CLOSED" : dueToGive > totalChangeInBox ? "INSUFFICIENT_FUNDS" : "OPEN";
 
-    
-// }
+    let msgInfo = "";
+
+    switch (statusTxt) {
+        case "INSUFFICIENT_FUNDS":
+            msgInfo = "You do not have enough change for customer!";
+            break;
+        case "CLOSED":
+            msgInfo = "You need to give the customer everything inside the box!";
+            break;
+        default:
+            msgInfo = "Customer needs to get:";
+            break;
+    }
+
+    changeDueDiv.innerHTML = `
+        <span style="color:black">Status: ${statusTxt}</span>
+        <p style="margin:1rem 0;">${msgInfo}</p>
+        <p></p>
+        `;
+}
+
 
 const displayStats = (paid, due) => {
     cashReceivedSpan.innerHTML= `${paid.toFixed(2)}`;
@@ -97,7 +120,7 @@ const displayChangeDue = due => {
         changeDueDiv.style.display = "block";
     }
     else {
-        changeDueDiv.textContent = "You owe some green back to customer!";
+        calculateChange(due);
         changeDueDiv.style.display = "block";
     }
 }
@@ -111,28 +134,23 @@ const evaluateInput = () => {
         const cashReceived = Number(cashInput.value.replace(regex, ""));
         cashInput.value = "";
         const changeDue = (cashReceived - priceToPay);
-        console.log(cashReceived)
-        console.log(priceToPay)
-        console.log(changeDue)
-        console.log(typeof(cashReceived))
-        console.log(typeof(priceToPay))
-        console.log(typeof(changeDue))
         
         if (cashReceived < priceToPay) {
             alert("Customer does not have enough money to purchase the item");
             return;
-        } else if (cashReceived === Number(priceToPay)) {
+        } else if (cashReceived === priceToPay) {
             displayStats(cashReceived, changeDue);
-            displayChangeDue(0);
+            displayChangeDue(changeDue);
             return;
         } else {
             displayStats(cashReceived, changeDue);
-            // calculateChange(cashReceived);
-            displayChangeDue(1);
+            displayChangeDue(changeDue);
         }
 
     }
 }
+
+
 
 
 cashInput.addEventListener("keyup", e => {
