@@ -84,63 +84,61 @@ window.onload = () => {
 const calculateChange = dueToGive => {
     const statusTxt = dueToGive.toFixed(2) === calculateBoxTotalValue().toFixed(2) ? "CLOSED" : dueToGive > calculateBoxTotalValue() ? "INSUFFICIENT_FUNDS" : "OPEN";
 
+    let msgInfo = "";
+    let changeInfo = "";
 
+    if (statusTxt === "INSUFFICIENT_FUNDS") {
+        msgInfo = "You do not have enough change for customer!";
+    }
+    else {
+        const resultChange = [];
+        let dueForCust = dueToGive;
+        for(let item of change) {
+            if (dueForCust > item.value && item.quantity !== 0){
+                let resultObject = {};
+                if (dueForCust/item.value > item.quantity) {
+                    resultObject = {
+                        "name" : item.name,
+                        "quantity": item.quantity,
+                        "totalDue" : (item.quantity*item.value).toFixed(2)
+                    }
+                    resultChange.push(resultObject);
+                    dueForCust = dueForCust - resultObject["totalDue"];
 
-    const resultChange = [];
-    let dueForCust = dueToGive;
-    for(let item of change) {
-        if (dueForCust > item.value && item.quantity !== 0){
-            let resultObject = {};
-            if (dueForCust/item.value > item.quantity) {
+                    item.quantity -= resultObject.quantity;
+                    displayBoxContents();
+                } else if (dueForCust/item.value <= item.quantity) {
+                const quantity = parseInt(dueForCust / item.value);
+                const totalDue = (quantity*item.value);
                 resultObject = {
                     "name" : item.name,
-                    "quantity": item.quantity,
-                    "totalDue" : (item.quantity*item.value).toFixed(2)
+                    "quantity": quantity,
+                    "totalDue" : totalDue.toFixed(2)
                 }
                 resultChange.push(resultObject);
-                dueForCust = dueForCust - resultObject["totalDue"];
-
+                dueForCust = dueForCust - totalDue;
+                
                 item.quantity -= resultObject.quantity;
                 displayBoxContents();
-            } else if (dueForCust/item.value <= item.quantity) {
-            const quantity = parseInt(dueForCust / item.value);
-            const totalDue = (quantity*item.value);
-            resultObject = {
-                "name" : item.name,
-                "quantity": quantity,
-                "totalDue" : totalDue.toFixed(2)
-            }
-            resultChange.push(resultObject);
-            dueForCust = dueForCust - totalDue;
-            
-            item.quantity -= resultObject.quantity;
-            displayBoxContents();
+                }
             }
         }
-    }
 
+
+        for(let item of resultChange) {
+            changeInfo += `<li>${item.name}: ${item.quantity} for a total of $${item.totalDue}</li>`;
+        }
+    
     
 
-
-    let changeInfo = "";
-    for(let item of resultChange) {
-        changeInfo += `<li>${item.name}: ${item.quantity} for a total of $${item.totalDue}</li>`;
-    }
-
-
-
-    let msgInfo = "";
-
-    switch (statusTxt) {
-        case "INSUFFICIENT_FUNDS":
-            msgInfo = "You do not have enough change for customer!";
-            break;
-        case "CLOSED":
-            msgInfo = "You need to give the customer everything inside the box!";
-            break;
-        default:
-            msgInfo = "Customer needs to get:";
-            break;
+        switch (statusTxt) {
+            case "CLOSED":
+                msgInfo = "You need to give the customer everything inside the box!";
+                break;
+            case "OPEN":
+                msgInfo = "Customer needs to get:";
+                break;
+        }
     }
 
     changeDueDiv.innerHTML = `
@@ -171,16 +169,16 @@ const displayChangeDue = due => {
     }
 }
 
-const addToBox = cash => {
-    for(let item of change) {
-        if (cash > item.value) {
-            const quantity = parseInt(cash / item.value);
-            item.quantity += quantity;
-            cash -= quantity*item.value;
-        }
-        displayBoxContents();
-    }
-}
+// const addToBox = cash => {
+//     for(let item of change) {
+//         if (cash > item.value) {
+//             const quantity = parseInt(cash / item.value);
+//             item.quantity += quantity;
+//             cash -= quantity*item.value;
+//         }
+//         displayBoxContents();
+//     }
+// }
 
 const evaluateInput = () => {
     if (cashInput.value === "") {
@@ -197,7 +195,7 @@ const evaluateInput = () => {
             alert("Customer does not have enough money to purchase the item");
             return;
         } else {
-            addToBox(cashReceived)
+            // addToBox(cashReceived)
             displayStats(cashReceived, changeDue);
             displayChangeDue(changeDue);
         }
