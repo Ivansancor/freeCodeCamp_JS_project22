@@ -66,7 +66,7 @@ const displayPricetoPay = () => {
 
 const displayBoxContents = () => {
     let htmlInjection = "";
-    for(let let item of change) {
+    for(let item of change) {
         htmlInjection += `<li>${item.name}: $${(item.value*item.quantity).toFixed(2)}<li>`;
     }
     registerBoxDrawerList.innerHTML = htmlInjection;
@@ -88,7 +88,7 @@ const calculateChange = dueToGive => {
 
     const resultChange = [];
     let dueForCust = dueToGive;
-    for(let let item of change) {
+    for(let item of change) {
         if (dueForCust > item.value && item.quantity !== 0){
             let resultObject = {};
             if (dueForCust/item.value > item.quantity) {
@@ -123,7 +123,7 @@ const calculateChange = dueToGive => {
 
 
     let changeInfo = "";
-    for(let let item of resultChange) {
+    for(let item of resultChange) {
         changeInfo += `<li>${item.name}: ${item.quantity} for a total of $${item.totalDue}</li>`;
     }
 
