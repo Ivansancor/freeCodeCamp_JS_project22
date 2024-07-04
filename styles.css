@@ -19,6 +19,12 @@ h1 {
     text-transform: uppercase;
 }
 
+#price-of-purchase {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
 label, input, button {
     display: block;
     margin: 0 auto;
@@ -46,11 +52,11 @@ button:hover {
     background-color: black;
 }
 
-#cash-received-p {
+#cash-received-p, #change-due-p, #change-available-p {
     display: none;
     margin-top: 2rem;
-    font-weight: bold;
-    font-size: 2rem;
+    font-weight: 600;
+    font-size: 1.5rem;
 }
 
 
@@ -87,8 +93,8 @@ button:hover {
 #change-due {
     display: none;
     position: absolute;
-    right: 3rem;
-    bottom: 6rem;
+    right: 2rem;
+    bottom: 2rem;
     width: 25rem;
     padding: 2rem;
     border: 0.5rem double darkgreen;
